@@ -21,6 +21,27 @@ const registerUser = async (user: User) => {
     return newUser;
 };
 
+const login = async (email: string, password: string) => {
+    const user = await userModel.findByEmail(email);
+
+    if (!user) {
+        throw new Error("EMAIL_NOT_FOUND");
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!passwordMatch) {
+        throw new Error("PASSWORD_INVALIDATE");
+    }
+
+    return {
+        id: user.id,
+        username: user.username
+    };
+};
+
+
 module.exports = {
     registerUser,
+    login,
 };
