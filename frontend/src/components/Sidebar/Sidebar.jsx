@@ -13,9 +13,13 @@ export default function Sidebar() {
 
       <div className="chat-list">
         <ChatItem
+          name="Meu Perfil"
+          lastMessage="Toque para detalhes"
+          active
+        />
+        <ChatItem
           name="Grupo IFMaker"
           lastMessage="Bom dia pessoal"
-          active
         />
         <ChatItem
           name="Maria Gabriela"
