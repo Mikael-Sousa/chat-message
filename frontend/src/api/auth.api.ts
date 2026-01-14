@@ -24,3 +24,24 @@ export const registerAPI = async (user: User) => {
     throw err;
   }
 };
+
+export const loginAPI = async (user: User) => {
+  try {
+    const res = await fetch("http://localhost:4000/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Erro ao logar");
+    }
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

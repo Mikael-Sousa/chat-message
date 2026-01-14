@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { registerAPI } from "@/src/api/auth.api";
 import { Input } from "@/src/components/Input/Input";
 import { Button } from "@/src/components/Button/Button";
@@ -12,6 +13,8 @@ export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const router = useRouter();
+
     const handleRegister = async () => {
         try {
             const res = await registerAPI({
@@ -21,6 +24,8 @@ export default function Register() {
             });
 
             console.log(res);
+            router.push("/");
+
         } catch (err: unknown) {
             if (err instanceof Error) {
                 console.log(err.message);
