@@ -30,6 +30,8 @@
 
 /* Item */
 .chat-item {
+  display: flex;
+  flex-direction: column;
   background: var(--dark-2);
   padding: 12px;
   border-radius: 12px;

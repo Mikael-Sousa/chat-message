@@ -1,5 +1,6 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 import type { User } from '../types/index';
 
 const registerUser = async (user: User) => {
@@ -34,10 +35,25 @@ const login = async (email: string, password: string) => {
         throw new Error("PASSWORD_INVALIDATE");
     }
 
-    return {
-        id: user.id,
-        username: user.username
-    };
+    const token = jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    }
+  );
+
+  return {
+    token,
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    },
+  };
 };
 
 

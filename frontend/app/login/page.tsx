@@ -22,7 +22,7 @@ export default function Login() {
         password,
       });
 
-      console.log(res);
+      localStorage.setItem("token", res.token);
       router.push("/");
 
     } catch (err: unknown) {

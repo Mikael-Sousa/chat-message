@@ -24,7 +24,7 @@ export default function Register() {
             });
 
             console.log(res);
-            router.push("/");
+            router.push("/login");
 
         } catch (err: unknown) {
             if (err instanceof Error) {

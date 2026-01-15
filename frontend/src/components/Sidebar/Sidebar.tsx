@@ -1,5 +1,5 @@
 import "./Sidebar.css";
-import ChatItem from "../ChatItem";
+import { ChatItem } from "../ChatItem";
 
 export default function Sidebar() {
   return (
@@ -15,7 +15,7 @@ export default function Sidebar() {
         <ChatItem
           name="Meu Perfil"
           lastMessage="Toque para detalhes"
-          active
+          active={true}
         />
         <ChatItem
           name="Grupo IFMaker"
