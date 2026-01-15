@@ -1,22 +1,21 @@
 const connection = require('./connection');
-import type { User } from '../types/index';
 
-const findByEmail = async (email: string) => {
-  const [ rows ] = await connection.execute(
-    'SELECT * FROM users WHERE email = ?',
-    [email]
-  )
-  return rows[0] || null
+const findProfileByUserId = async (userId: number) => {
+  const [rows] = await connection.execute(
+    `
+    SELECT 
+      u.username,
+      p.avatar_url
+    FROM users u
+    LEFT JOIN user_profiles p ON p.user_id = u.id
+    WHERE u.id = ?
+    `,
+    [userId]
+  );
+
+  return rows[0];
 };
-
-const registerNewUser = async (user: User): Promise<{insertId: number}>=> {
-  const [ rows ] = await connection.execute(
-    'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-  [user.username, user.email, user.password]);
-  return {insertId: rows.insertId}
-}
 
 module.exports = {
-  findByEmail,
-  registerNewUser
-};
+    findProfileByUserId
+}
