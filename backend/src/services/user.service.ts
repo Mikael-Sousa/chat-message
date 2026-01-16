@@ -15,6 +15,22 @@ const getProfileByUserId = async (userId: number) => {
   return profile;
 };
 
+const getProfileByUsername = async (username: string) => {
+
+  if (!username) {
+    throw new Error("USERNAME_REQUIRED");
+  }
+
+  const profile = await userModel.findProfileByUsername(username);
+
+  if (!profile) {
+    throw new Error("PROFILE_NOT_FOUND");
+  }
+
+  return profile;
+}
+
 module.exports = {
   getProfileByUserId,
+  getProfileByUsername
 };
