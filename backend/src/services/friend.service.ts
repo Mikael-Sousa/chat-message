@@ -32,6 +32,34 @@ const sendFriendRequest = async (friendRequest: FriendRequest) => {
     return request
 }
 
+const updateFriendRequestStatus = async (friendRequest: FriendRequest) => {
+    const request = await friendModel.findById(friendRequest.id);
+
+    if (!request) {
+        throw new Error("REQUEST_NOT_EXISTS");
+    }
+
+    if (request.receiver_id !== friendRequest.receiverId) {
+        throw new Error("NOT_AUTHORIZED");
+    }
+
+    if (request.status !== "pending") {
+        throw new Error("REQUEST_ALREADY_PROCESSED");
+    }
+
+    await friendModel.updateStatus({
+        id: friendRequest.id,
+        status: friendRequest.status
+    });
+
+    return {
+        ...request,
+        status: friendRequest.status
+    };
+};
+
+
 module.exports = {
     sendFriendRequest,
+    updateFriendRequestStatus
 }

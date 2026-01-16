@@ -6,8 +6,8 @@ export interface User {
 
 export interface FriendRequest {
   id?: number;
-  senderId: number;
-  receiverId: number;
+  senderId?: number;
+  receiverId?: number;
   status?: "pending" | "accepted" | "rejected";
   createdAt?: Date;
 }
