@@ -1,5 +1,21 @@
 const friendService = require('../services/friend.service')
 
+const listFriends = async (req: any, res: any) => {
+    try {
+        const userId = req.user.id
+
+        const friends = await friendService.listUserFriends(userId)
+
+        return res.status(200).json({ friends })
+
+    } catch (err: any) {
+
+        console.error(err)
+
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 const sendFriendRequest = async (req: any, res: any) => {
     try {
         const senderId = req.user.id
@@ -83,6 +99,7 @@ const updateFriendRequestStatus = async (req: any, res: any) => {
 };
 
 module.exports = {
+    listFriends,
     sendFriendRequest,
     updateFriendRequestStatus
 }

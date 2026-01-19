@@ -22,6 +22,22 @@ const findById = async (id: number) => {
     return rows[0];
 };
 
+const listUserFriends = async (userId: number) => {
+    const [rows] = await connection.execute(
+        `SELECT 
+  u.username,
+  p.avatar_url
+  FROM friends f
+  JOIN users u ON u.id = f.friend_id
+  LEFT JOIN user_profiles p ON p.user_id = u.id
+  WHERE f.user_id = ?;
+`,
+        [userId]
+    );
+
+    return rows;
+};
+
 const sendFriendRequest = async (friendRequest: FriendRequest) => {
     const [result] = await connection.execute(
         `INSERT INTO friend_requests (sender_id, receiver_id)
@@ -69,6 +85,7 @@ const createFriendship = async (
 module.exports = {
     requestExists,
     findById,
+    listUserFriends,
     sendFriendRequest,
     updateStatus,
     createFriendship

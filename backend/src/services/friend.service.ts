@@ -2,6 +2,16 @@ const friendModel = require('../models/friend.model')
 const connection = require('../models/connection');
 import type { FriendRequest } from '../types/index'
 
+const listUserFriends = async (userId: number) => {
+    const friends = await friendModel.listUserFriends(userId)
+
+    if (!friends) {
+        throw new Error("REQUEST_FAILED");
+    }
+
+    return friends
+}
+
 const sendFriendRequest = async (friendRequest: FriendRequest) => {
 
     if (!friendRequest.senderId || !friendRequest.receiverId) {
@@ -102,6 +112,7 @@ const updateFriendRequestStatus = async (friendRequest: FriendRequest) => {
 
 
 module.exports = {
+    listUserFriends,
     sendFriendRequest,
     acceptRequest,
     updateFriendRequestStatus
