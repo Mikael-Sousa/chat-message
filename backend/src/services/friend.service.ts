@@ -3,23 +3,26 @@ const connection = require('../models/connection');
 import type { FriendRequest } from '../types/index'
 
 const listUserFriends = async (userId: number) => {
-    const friends = await friendModel.listUserFriends(userId)
+    const friends = await friendModel.listUserFriends(userId);
 
     if (!friends) {
-        throw new Error("REQUEST_FAILED");
+        return { status: 400, message: "Request failed" };
     }
 
-    return friends
+    return {
+        status: 200,
+        data: friends,
+    };
 }
 
 const sendFriendRequest = async (friendRequest: FriendRequest) => {
 
     if (!friendRequest.senderId || !friendRequest.receiverId) {
-        throw new Error("SENDER_ID_REQUIRED || RECEIVER_ID_REQUIRED");
+        return { status: 400, message: "senderId or receiverId is required" };
     }
 
     if (friendRequest.senderId === friendRequest.receiverId) {
-        throw new Error("REQUEST_SENT_TO_YOURSELF");
+        return { status: 400, message: "You cannot send a request to yourself" };
     }
 
     const requestExists = await friendModel.requestExists({
@@ -28,7 +31,7 @@ const sendFriendRequest = async (friendRequest: FriendRequest) => {
     })
 
     if (requestExists > 0) {
-        throw new Error("REQUEST_ALREADY_EXISTS");
+        return { status: 409, message: "Request already exists" };
     }
 
     const request = await friendModel.sendFriendRequest({
@@ -37,10 +40,14 @@ const sendFriendRequest = async (friendRequest: FriendRequest) => {
     })
 
     if (!request) {
-        throw new Error("REQUEST_FAILED");
+        return { status: 400, message: "Request failed" };
     }
 
-    return request
+    return {
+        status: 201,
+        message: "Friend request sent",
+        data: request,
+    };
 }
 
 const acceptRequest = async (friendRequest: FriendRequest) => {
@@ -51,16 +58,22 @@ const acceptRequest = async (friendRequest: FriendRequest) => {
 
         const request = await friendModel.findById(friendRequest.id, conn);
 
-        if (!request) throw new Error("REQUEST_NOT_EXISTS");
-        if (request.receiver_id !== friendRequest.receiverId) throw new Error("NOT_AUTHORIZED");
-        if (request.status !== "pending") throw new Error("REQUEST_ALREADY_PROCESSED");
+        if (!request) {
+            return { status: 404, message: "Friend request not found" };
+        }
 
-        await friendModel.updateStatus(
-            {
-                id: friendRequest.id,
-                status: friendRequest.status
-            }
-        );
+        if (request.receiver_id !== friendRequest.receiverId) {
+            return { status: 403, message: "Not authorized" };
+        }
+
+        if (request.status !== "pending") {
+            return { status: 409, message: "Request already processed" };
+        }
+
+        await friendModel.updateStatus({
+            id: friendRequest.id,
+            status: "accepted",
+        });
 
         await friendModel.createFriendship(
             request.sender_id,
@@ -71,42 +84,47 @@ const acceptRequest = async (friendRequest: FriendRequest) => {
         await conn.commit();
 
         return {
-            ...request,
-            status: "accepted"
+            status: 200,
+            data: {
+                ...request,
+                status: "accepted",
+            },
         };
 
     } catch (err) {
         await conn.rollback();
-        throw err;
+        return { status: 500, message: "Internal server error" };
     } finally {
         conn.release();
     }
 };
 
-
 const updateFriendRequestStatus = async (friendRequest: FriendRequest) => {
     const request = await friendModel.findById(friendRequest.id);
 
     if (!request) {
-        throw new Error("REQUEST_NOT_EXISTS");
+        return { status: 404, message: "Friend request not found" };
     }
 
     if (request.receiver_id !== friendRequest.receiverId) {
-        throw new Error("NOT_AUTHORIZED");
+        return { status: 403, message: "Not authorized" };
     }
 
     if (request.status !== "pending") {
-        throw new Error("REQUEST_ALREADY_PROCESSED");
+        return { status: 409, message: "Request already processed" };
     }
 
     await friendModel.updateStatus({
         id: friendRequest.id,
-        status: friendRequest.status
+        status: friendRequest.status,
     });
 
     return {
-        ...request,
-        status: friendRequest.status
+        status: 200,
+        data: {
+            ...request,
+            status: friendRequest.status,
+        },
     };
 };
 

@@ -4,38 +4,40 @@ const jwt = require("jsonwebtoken");
 import type { User } from '../types/index';
 
 const registerUser = async (user: User) => {
-    const existingUser = await authModel.findByEmail(user.email);
+  const existingUser = await authModel.findByEmail(user.email);
 
-    if (existingUser) {
-        throw new Error("EMAIL_ALREADY_EXISTS");
-    }
+  if (existingUser) {
+    return { status: 409, message: "Email already registered" };
+  }
 
-    const hashedPassword = await bcrypt.hash(user.password, 10)
+  const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    const newUser = await authModel.registerNewUser({
-        username: user.username,
-        email: user.email,
-        password: hashedPassword
-    });
+  const newUser = await authModel.registerNewUser({
+    username: user.username,
+    email: user.email,
+    password: hashedPassword,
+  });
 
-
-    return newUser;
+  return {
+    status: 201,
+    data: newUser,
+  };
 };
 
 const login = async (email: string, password: string) => {
-    const user = await authModel.findByEmail(email);
+  const user = await authModel.findByEmail(email);
 
-    if (!user) {
-        throw new Error("EMAIL_NOT_FOUND");
-    }
+  if (!user) {
+    return { status: 401, message: "Email or password invalid" };
+  }
 
-    const passwordMatch = await bcrypt.compare(password, user.password_hash);
+  const passwordMatch = await bcrypt.compare(password, user.password_hash);
 
-    if (!passwordMatch) {
-        throw new Error("PASSWORD_INVALIDATE");
-    }
+  if (!passwordMatch) {
+    return { status: 401, message: "Email or password invalid" };
+  }
 
-    const token = jwt.sign(
+  const token = jwt.sign(
     {
       id: user.id,
       email: user.email,
@@ -47,17 +49,20 @@ const login = async (email: string, password: string) => {
   );
 
   return {
-    token,
-    user: {
-      id: user.id,
-      username: user.username,
-      email: user.email,
+    status: 200,
+    data: {
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
     },
   };
 };
 
 
 module.exports = {
-    registerUser,
-    login,
+  registerUser,
+  login,
 };

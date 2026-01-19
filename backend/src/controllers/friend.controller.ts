@@ -4,14 +4,11 @@ const listFriends = async (req: any, res: any) => {
     try {
         const userId = req.user.id
 
-        const friends = await friendService.listUserFriends(userId)
+        const result = await friendService.listUserFriends(userId)
 
-        return res.status(200).json({ friends })
+        return res.status(result.status).json(result);
 
     } catch (err: any) {
-
-        console.error(err)
-
         return res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -21,30 +18,11 @@ const sendFriendRequest = async (req: any, res: any) => {
         const senderId = req.user.id
         const { receiverId } = req.body
 
-        const request = await friendService.sendFriendRequest({ senderId, receiverId })
+        const result = await friendService.sendFriendRequest({ senderId, receiverId })
 
-        return res.status(200).json({ request })
+        return res.status(result.status).json(result);
 
     } catch (err: any) {
-
-        console.error(err)
-
-        if (err.message === "SENDER_ID_REQUIRED || RECEIVER_ID_REQUIRED") {
-            return res.status(400).json({ message: "!senderId or !receiverId" });
-        }
-
-        if (err.message === "REQUEST_SENT_TO_YOURSELF") {
-            return res.status(400).json({ message: "You cannot send a request to yourself" });
-        }
-
-        if (err.message === "REQUEST_ALREADY_EXISTS") {
-            return res.status(400).json({ message: "Request already exists" });
-        }
-
-        if (err.message === "REQUEST_FAILED") {
-            return res.status(400).json({ message: "Request failed" });
-        }
-
         return res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -63,37 +41,14 @@ const updateFriendRequestStatus = async (req: any, res: any) => {
             return res.status(400).json({ message: "Invalid status" });
         }
 
-        if (status === "accepted") {
-            const request = await friendService.acceptRequest({
-                id,
-                receiverId,
-                status,
-            });
-            return res.status(200).json(request);
-        } else {
-            const request = await friendService.updateFriendRequestStatus({
-                id,
-                receiverId,
-                status,
-            });
-            return res.status(200).json(request);
-        }
+        const result =
+            status === "accepted"
+                ? await friendService.acceptRequest({ id, receiverId, status })
+                : await friendService.updateFriendRequestStatus({ id, receiverId, status });
+
+        return res.status(result.status).json(result);
 
     } catch (err: any) {
-        console.error(err);
-
-        if (err.message === "REQUEST_NOT_EXISTS") {
-            return res.status(404).json({ message: "Friend request not found" });
-        }
-
-        if (err.message === "NOT_AUTHORIZED") {
-            return res.status(403).json({ message: "Not authorized to update this request" });
-        }
-
-        if (err.message === "REQUEST_ALREADY_PROCESSED") {
-            return res.status(409).json({ message: "Request already processed" });
-        }
-
         return res.status(500).json({ message: "Internal server error" });
     }
 };

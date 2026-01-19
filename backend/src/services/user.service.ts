@@ -1,33 +1,37 @@
 const userModel = require("../models/user.model");
 
 const getProfileByUserId = async (userId: number) => {
-
   if (!userId) {
-    throw new Error("USER_ID_REQUIRED");
+    return { status: 400, message: "userId is required" };
   }
 
   const profile = await userModel.findProfileByUserId(userId);
 
   if (!profile) {
-    throw new Error("PROFILE_NOT_FOUND");
+    return { status: 404, message: "Profile not found" };
   }
 
-  return profile;
+  return {
+    status: 200,
+    data: profile,
+  };
 };
 
 const getProfileByUsername = async (username: string) => {
-
   if (!username) {
-    throw new Error("USERNAME_REQUIRED");
+    return { status: 400, message: "username is required" };
   }
 
   const profile = await userModel.findProfileByUsername(username);
 
   if (!profile) {
-    throw new Error("PROFILE_NOT_FOUND");
+    return { status: 404, message: "Profile not found" };
   }
 
-  return profile;
+  return {
+    status: 200,
+    data: profile,
+  };
 }
 
 module.exports = {
