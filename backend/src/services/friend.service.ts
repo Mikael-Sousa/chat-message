@@ -1,5 +1,5 @@
 const friendModel = require('../models/friend.model')
-const connection = require('../models/connection');
+const connection = require('../database/connection');
 import type { FriendRequest } from '../types/index'
 
 const listUserFriends = async (userId: number) => {

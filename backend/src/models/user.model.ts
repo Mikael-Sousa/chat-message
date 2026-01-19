@@ -1,4 +1,4 @@
-const connection = require('./connection');
+const connection = require('../database/connection');
 
 const findProfileByUserId = async (userId: number) => {
   const [rows] = await connection.execute(

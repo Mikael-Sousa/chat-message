@@ -1,4 +1,4 @@
-const connection = require('./connection');
+const connection = require('../database/connection');
 import type { User } from '../types/index';
 
 const findByEmail = async (email: string) => {

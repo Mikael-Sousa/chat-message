@@ -1,4 +1,4 @@
-const connection = require('./connection');
+const connection = require('../database/connection');
 import type { FriendRequest } from '../types/index'
 
 const requestExists = async (friendRequest: FriendRequest) => {
