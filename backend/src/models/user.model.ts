@@ -13,7 +13,7 @@ const findProfileByUserId = async (userId: number) => {
     [userId]
   );
 
-  return rows[0];
+  return rows[0] || null;
 };
 
 const findProfileByUsername = async (username: string) => {
@@ -35,6 +35,6 @@ const findProfileByUsername = async (username: string) => {
 
 
 module.exports = {
-  findProfileByUserId, 
+  findProfileByUserId,
   findProfileByUsername,
 }

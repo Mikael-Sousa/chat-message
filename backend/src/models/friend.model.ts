@@ -67,6 +67,7 @@ const createFriendship = async (
     friendId: number,
     conn: any
 ) => {
+    // Cria relação bidirecional de amizade
     // A => B
     await conn.execute(
         `INSERT INTO friends (user_id, friend_id)

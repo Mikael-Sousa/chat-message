@@ -54,6 +54,7 @@ const acceptRequest = async (friendRequest: FriendRequest) => {
     const conn = await connection.getConnection();
 
     try {
+        // Aceitar um pedido de amizade envolve múltiplas operações no banco que precisam ser executadas de forma atômica.
         await conn.beginTransaction();
 
         const request = await friendModel.findById(friendRequest.id, conn);
@@ -63,6 +64,7 @@ const acceptRequest = async (friendRequest: FriendRequest) => {
         }
 
         if (request.receiver_id !== friendRequest.receiverId) {
+            // Apenas o destinatário do pedido pode aceitá-lo ou rejeitá-lo
             return { status: 403, message: "Not authorized" };
         }
 
@@ -107,6 +109,7 @@ const updateFriendRequestStatus = async (friendRequest: FriendRequest) => {
     }
 
     if (request.receiver_id !== friendRequest.receiverId) {
+        // Apenas o destinatário do pedido pode aceitá-lo ou rejeitá-lo
         return { status: 403, message: "Not authorized" };
     }
 
