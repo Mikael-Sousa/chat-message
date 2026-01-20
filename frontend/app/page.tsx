@@ -1,3 +1,6 @@
+
+"use client";
+
 import ProtectedRoute from "@/src/components/ProtectedRoute";
 import Sidebar from "../src/components/Sidebar/Sidebar";
 import Chat from "../src/components/Chat/Chat";
