@@ -1,14 +1,15 @@
 const jwt = require("jsonwebtoken");
+const messageService = require("../services/message.service")
 
 function setupWS(wss: any) {
     const clients = new Map();
 
-    wss.on("connection", (ws: any) => {
-        console.log("WS conectado");
+    wss.on("connection", async (ws: any) => {
+        console.log("WS connected");
 
         ws.isAuthenticated = false;
 
-        ws.on("message", (data: any) => {
+        ws.on("message", async (data: any) => {
             let msg;
 
             try {
@@ -31,7 +32,7 @@ function setupWS(wss: any) {
                         type: "AUTH_SUCCESS"
                     }));
 
-                    console.log("Autenticado:", ws.userId);
+                    console.log("authenticated:", ws.userId);
                 } catch {
                     ws.close();
                 }
@@ -53,13 +54,25 @@ function setupWS(wss: any) {
                         message: msg.message
                     }));
                 }
+
+                try {
+                    await messageService.saveMessage({
+                        senderId: ws.userId,
+                        receiverId: msg.to,
+                        content: msg.message
+                    });
+                } catch (err) {
+                    console.error("DB error:", err);
+                }
+
             }
+
         });
 
         ws.on("close", () => {
             if (ws.userId) {
                 clients.delete(ws.userId);
-                console.log("Desconectou:", ws.userId);
+                console.log("Disconnected:", ws.userId);
             }
         });
     });

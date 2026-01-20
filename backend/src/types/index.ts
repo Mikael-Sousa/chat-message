@@ -1,7 +1,11 @@
 export interface User {
-  username: string;
+  id?: number;
+  username?: string;
   email: string;
   password: string;
+  createdAt?: Date;
+  updatedAt: Date;
+  isActive?: number;
 }
 
 export interface FriendRequest {
@@ -12,3 +16,11 @@ export interface FriendRequest {
   createdAt?: Date;
 }
 
+export interface Messages {
+  id?: number;
+  senderId: number;
+  receiverId: number;
+  content: string | number;
+  status?: "sent" | "delivered" | "read";
+  createdAt?: Date;
+}
