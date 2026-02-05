@@ -22,7 +22,7 @@ export default function Login() {
         password,
       });
 
-      localStorage.setItem("token", res.token);
+      localStorage.setItem("token", res.data.token);
       router.push("/");
 
     } catch (err: unknown) {

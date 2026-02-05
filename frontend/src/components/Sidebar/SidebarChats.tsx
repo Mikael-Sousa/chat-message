@@ -1,7 +1,10 @@
-import "./Sidebar.css";
 import { ChatItem } from "../ChatItem";
 
-export default function Sidebar() {
+type SidebarChatsProps = {
+  onOpenProfile: () => void;
+};
+
+export default function SidebarChats({ onOpenProfile }: SidebarChatsProps) {
   return (
     <>
       <h4 className="text-pink mb-3">Chats</h4>
@@ -13,15 +16,19 @@ export default function Sidebar() {
 
       <div className="chat-list">
         <ChatItem
+          type="me"
           name="Meu Perfil"
           lastMessage="Toque para detalhes"
-          active={true}
+          active
+          onClick={onOpenProfile}
         />
         <ChatItem
+          type="friend"
           name="Grupo IFMaker"
           lastMessage="Bom dia pessoal"
         />
         <ChatItem
+          type="friend"
           name="Maria Gabriela"
           lastMessage="Feliz ano novo"
         />

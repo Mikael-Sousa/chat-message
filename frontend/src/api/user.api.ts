@@ -1,4 +1,4 @@
-export const getMeAPI = async (token: string) => {
+export const getMeAPI = async (token: string | null) => {
   if (!token) {
     throw new Error("Token não encontrado");
   }
