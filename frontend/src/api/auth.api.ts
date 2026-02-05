@@ -15,7 +15,7 @@ export const registerAPI = async (user: User) => {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || "Erro ao registrar");
+      throw new Error(data.message);
     }
 
     return data;
@@ -36,7 +36,7 @@ export const loginAPI = async (user: User) => {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || "Erro ao logar");
+      throw new Error(data.message);
     }
 
     return data;
