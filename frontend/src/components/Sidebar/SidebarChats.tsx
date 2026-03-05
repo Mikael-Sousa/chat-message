@@ -1,18 +1,37 @@
-import { ChatItem } from "../ChatItem";
+import { useState } from "react";
+import { Input } from "../Input/Input";
+import { ChatItem } from "../ChatItem"
 
 type SidebarChatsProps = {
   onOpenProfile: () => void;
-};
+  onOpenUser: (username: string) => void;
+};;
 
-export default function SidebarChats({ onOpenProfile }: SidebarChatsProps) {
+export default function SidebarChats({
+  onOpenProfile,
+  onOpenUser,
+}: SidebarChatsProps) {
+  const [name, setName] = useState("");
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!name.trim()) return;
+
+    onOpenUser(name);
+    setName("");
+  }
+
   return (
     <>
-      <h4 className="text-pink mb-3">Chats</h4>
-
-      <input
-        className="form-control search mb-3"
-        placeholder="Pesquisar..."
-      />
+      <form onSubmit={handleSubmit}>
+        <Input
+          label=""
+          placeholder="Pesquisar usuário..."
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </form>
 
       <div className="chat-list">
         <ChatItem
@@ -22,11 +41,13 @@ export default function SidebarChats({ onOpenProfile }: SidebarChatsProps) {
           active
           onClick={onOpenProfile}
         />
+
         <ChatItem
           type="friend"
           name="Grupo IFMaker"
           lastMessage="Bom dia pessoal"
         />
+
         <ChatItem
           type="friend"
           name="Maria Gabriela"

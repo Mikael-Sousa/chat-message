@@ -48,20 +48,9 @@ export default function SidebarProfile({ onBack }: SidebarProfileProps) {
 
   return (
     <div className="h-100 d-flex flex-column">
-
-      <div className="d-flex align-items-center mb-4">
-        <button
-          className="btn btn-sm btn-outline-light me-2"
-          onClick={onBack}
-        >
-          ←
-        </button>
-        <h5 className="mb-0">Meu perfil</h5>
-      </div>
-
       <div className="text-center">
         <Image
-          src={user.avatarUrl || "/avatar-default.png"}
+          src={user.avatarUrl || "/icon-user.png"}
           alt="Avatar"
           width={120}
           height={120}
@@ -71,15 +60,23 @@ export default function SidebarProfile({ onBack }: SidebarProfileProps) {
         <h6>@{user.username}</h6>
       </div>
 
-      <div className="mt-4">
-        <button 
-        className="btn btn-outline-danger w-100"
-        onClick={() => {
+      <div className="mt-4 d-grid gap-2">
+
+        <button
+          className="btn btn-outline-danger w-100"
+          onClick={() => {
             localStorage.removeItem("token");
             router.push("/login");
-        }}
+          }}
         >
           Sair
+        </button>
+
+        <button
+          className="btn btn-outline-secondary"
+          onClick={onBack}
+        >
+          Voltar
         </button>
       </div>
 

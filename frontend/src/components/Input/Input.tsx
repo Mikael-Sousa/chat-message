@@ -1,5 +1,5 @@
 type InputProps = {
-  label: string;
+  label?: string;
   type?: string;
   placeholder?: string;
   value?: string;
@@ -11,12 +11,14 @@ export function Input({
   type = "text",
   placeholder,
   value,
-  onChange
+  onChange,
 }: InputProps) {
   return (
-    <div className="input-group">
-      <label>{label}</label>
+    <div>
+      {label && <label>{label}</label>}
+
       <input
+        className="form-control search mb-3"
         type={type}
         placeholder={placeholder}
         value={value}
