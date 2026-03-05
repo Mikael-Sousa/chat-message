@@ -30,7 +30,7 @@ export default function SidebarUserProfile({
                 const res = await getUsersAPI(username);
                 setUser(res.data);
             } catch (err) {
-                console.error("Erro ao buscar usuário", err);
+                console.error(err);
             } finally {
                 setLoading(false);
             }

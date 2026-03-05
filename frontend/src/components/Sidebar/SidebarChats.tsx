@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../Input/Input";
 import { ChatItem } from "../ChatItem"
+import { listFriendsAPI } from "../../api/friend.api"
 
 type SidebarChatsProps = {
   onOpenProfile: () => void;
   onOpenUser: (username: string) => void;
-};;
+};
+
+type Friend =
+  {
+    username: string,
+    avatar_url?: string
+  }
+  ;
 
 export default function SidebarChats({
   onOpenProfile,
   onOpenUser,
 }: SidebarChatsProps) {
   const [name, setName] = useState("");
+  const [friends, setFriends] = useState<Friend[]>([]);
+
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -21,6 +31,23 @@ export default function SidebarChats({
     onOpenUser(name);
     setName("");
   }
+
+  useEffect(() => {
+    const loadMe = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await listFriendsAPI(token);
+        console.log(res.data);
+        setFriends(res.data)
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadMe();
+  }, []);
 
   return (
     <>
@@ -37,22 +64,19 @@ export default function SidebarChats({
         <ChatItem
           type="me"
           name="Meu Perfil"
-          lastMessage="Toque para detalhes"
+          Message="Toque para detalhes"
           active
           onClick={onOpenProfile}
         />
 
-        <ChatItem
-          type="friend"
-          name="Grupo IFMaker"
-          lastMessage="Bom dia pessoal"
-        />
-
-        <ChatItem
-          type="friend"
-          name="Maria Gabriela"
-          lastMessage="Feliz ano novo"
-        />
+        {friends.map((f, i) => (
+          <ChatItem
+            key={i}
+            type={"friend"}
+            name={f.username}
+            Message={"Toque para conversar"}
+          />
+        ))}
       </div>
     </>
   );

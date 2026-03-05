@@ -1,7 +1,7 @@
 type ChatItemProps = {
   type: "me" | "friend";
   name: string;
-  lastMessage: string;
+  Message: string;
   active?: boolean;
   onClick?: () => void;
 };
@@ -9,7 +9,7 @@ type ChatItemProps = {
 export function ChatItem({
   type,
   name,
-  lastMessage,
+  Message,
   active = false,
   onClick,
 }: ChatItemProps) {
@@ -21,7 +21,7 @@ export function ChatItem({
         onClick={onClick}
       >
         <strong>{name}</strong>
-        <small>{lastMessage}</small>
+        <small>{Message}</small>
       </div>
     );
   }
@@ -31,7 +31,7 @@ export function ChatItem({
       className={`chat-item ${active ? "active" : ""}`}
     >
       <strong>{name}</strong>
-      <small>{lastMessage}</small>
+      <small>{Message}</small>
     </div>
   );
 }

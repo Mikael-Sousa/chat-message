@@ -29,7 +29,7 @@ export default function SidebarProfile({ onBack }: SidebarProfileProps) {
         const res = await getMeAPI(token);
         setUser(res.data);
       } catch (err) {
-        console.error("Erro ao buscar perfil", err);
+        console.error(err);
       } finally {
         setLoading(false);
       }
