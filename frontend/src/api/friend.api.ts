@@ -27,6 +27,35 @@ export const listFriendsAPI = async (token: string) => {
     return data;
 };
 
+export const findFriendRequestAPI = async ({ token, friendRequest }: { token: string; friendRequest: FriendRequest }) => {
+    if (!token) {
+        throw new Error("Token não encontrado");
+    }
+    try {
+        const res = await fetch("http://localhost:4000/friends/find-request", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                receiverId: friendRequest.receiverId
+            }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message);
+        }
+
+        return data;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
+
 export const sendFriendRequestAPI = async ({ token, friendRequest }: { token: string; friendRequest: FriendRequest }) => {
     if (!token) {
         throw new Error("Token não encontrado");
@@ -46,7 +75,7 @@ export const sendFriendRequestAPI = async ({ token, friendRequest }: { token: st
         const data = await res.json();
 
         if (!res.ok) {
-            throw new Error(data.message || "Erro ao logar");
+            throw new Error(data.message);
         }
 
         return data;

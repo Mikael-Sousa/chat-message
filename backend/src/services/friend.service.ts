@@ -15,6 +15,27 @@ const listUserFriends = async (userId: number) => {
     };
 }
 
+const findFriendRequest = async (friendRequest: FriendRequest) => {
+
+    if (!friendRequest.senderId || !friendRequest.receiverId) {
+        return { status: 400, message: "senderId or receiverId is required" };
+    }
+
+    const requestExists = await friendModel.requestExists({
+        senderId: friendRequest.senderId,
+        receiverId: friendRequest.receiverId
+    })
+
+    if (requestExists < 1) {
+        return { status: 400, message: "Request not exists" };
+    }
+
+    if (requestExists > 0) {
+        return { status: 201, message: "Request already exists" };
+    }
+
+  }
+
 const sendFriendRequest = async (friendRequest: FriendRequest) => {
 
     if (!friendRequest.senderId || !friendRequest.receiverId) {
@@ -152,6 +173,7 @@ const updateFriendRequestStatus = async (friendRequest: FriendRequest) => {
 
 module.exports = {
     listUserFriends,
+    findFriendRequest,
     sendFriendRequest,
     findFriendRequests,
     acceptRequest,

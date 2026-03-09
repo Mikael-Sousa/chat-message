@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getUsersAPI } from "../../api/user.api"
-import { sendFriendRequestAPI } from "../../api/friend.api"
+import { sendFriendRequestAPI, findFriendRequestAPI } from "../../api/friend.api"
 
 type SidebarUserProfileProps = {
     username: string;
@@ -22,6 +22,28 @@ export default function SidebarUserProfile({
 }: SidebarUserProfileProps) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [textStatusRequest, setTextStatusRequest] = useState("Enviar solicitação")
+
+    const checkRequest = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token || !user) return;
+
+            const res = await findFriendRequestAPI({
+                token,
+                friendRequest: {
+                    receiverId: user.id,
+                },
+            });
+
+            if (res.status === 201) {
+                setTextStatusRequest("Enviado");
+            }
+
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     useEffect(() => {
         const loadUser = async () => {
@@ -37,6 +59,12 @@ export default function SidebarUserProfile({
 
         loadUser();
     }, [username]);
+
+    useEffect(() => {
+    if (user) {
+        checkRequest();
+    }
+}, [user]);
 
     if (loading) {
         return <div className="text-center text-muted">Carregando perfil...</div>;
@@ -91,6 +119,7 @@ export default function SidebarUserProfile({
                 <button
                     className="btn btn-outline-primary"
                     onClick={async () => {
+                        setTextStatusRequest("Enviado")
                         try {
                             const token = localStorage.getItem("token");
                             if (!token || !user) return;
@@ -107,7 +136,7 @@ export default function SidebarUserProfile({
                         }
                     }}
                 >
-                    Enviar solicitação
+                    {textStatusRequest}
                 </button>
 
                 <button
