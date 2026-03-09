@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { getUsersAPI } from "../../api/user.api"
+import { sendFriendRequestAPI } from "../../api/friend.api"
 
 type SidebarUserProfileProps = {
     username: string;
@@ -11,6 +11,7 @@ type SidebarUserProfileProps = {
 };
 
 type User = {
+    id: number;
     username: string;
     avatarUrl?: string;
 };
@@ -21,8 +22,6 @@ export default function SidebarUserProfile({
 }: SidebarUserProfileProps) {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-
-    const router = useRouter();
 
     useEffect(() => {
         const loadUser = async () => {
@@ -91,7 +90,22 @@ export default function SidebarUserProfile({
 
                 <button
                     className="btn btn-outline-primary"
-                    onClick={() => router.push("")}
+                    onClick={async () => {
+                        try {
+                            const token = localStorage.getItem("token");
+                            if (!token || !user) return;
+
+                            await sendFriendRequestAPI({
+                                token,
+                                friendRequest: {
+                                    receiverId: user.id,
+                                },
+                            });
+
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }}
                 >
                     Enviar solicitação
                 </button>

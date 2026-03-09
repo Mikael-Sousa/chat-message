@@ -20,6 +20,7 @@ const findProfileByUsername = async (username: string) => {
   const [rows] = await connection.execute(
     `
   SELECT 
+    u.id,
     u.username,
     p.avatar_url
   FROM users u

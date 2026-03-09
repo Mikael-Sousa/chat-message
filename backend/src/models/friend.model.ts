@@ -22,6 +22,19 @@ const findById = async (id: number) => {
     return rows[0];
 };
 
+const findRequests = async (userId: number) => {
+    const [rows] = await connection.execute(
+        `SELECT fr.id, u.username, u.id AS senderId
+     FROM friend_requests fr
+     JOIN users u ON u.id = fr.sender_id
+     WHERE fr.receiver_id = ? AND fr.status = 'pending'`,
+        [userId]
+    );
+
+    return rows
+
+};
+
 const listUserFriends = async (userId: number) => {
     const [rows] = await connection.execute(
         `SELECT 
@@ -86,6 +99,7 @@ const createFriendship = async (
 module.exports = {
     requestExists,
     findById,
+    findRequests,
     listUserFriends,
     sendFriendRequest,
     updateStatus,

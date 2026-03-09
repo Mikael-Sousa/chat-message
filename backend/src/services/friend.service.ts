@@ -50,6 +50,24 @@ const sendFriendRequest = async (friendRequest: FriendRequest) => {
     };
 }
 
+const findFriendRequests = async (userId: number) => {
+
+    if (!userId) {
+        return { status: 400, message: "receiverId is required" };
+    }
+
+    const requests = await friendModel.findRequests(userId)
+
+    if (!requests) {
+        return { status: 400, message: "Request failed" };
+    }
+
+    return {
+        status: 200,
+        data: requests,
+    };
+}
+
 const acceptRequest = async (friendRequest: FriendRequest) => {
     const conn = await connection.getConnection();
 
@@ -135,6 +153,7 @@ const updateFriendRequestStatus = async (friendRequest: FriendRequest) => {
 module.exports = {
     listUserFriends,
     sendFriendRequest,
+    findFriendRequests,
     acceptRequest,
     updateFriendRequestStatus
 }

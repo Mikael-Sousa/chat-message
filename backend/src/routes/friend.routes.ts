@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewares/auth.middleware");
 const router = express.Router()
 
 router.get("/", authMiddleware, friendController.listFriends)
+router.get("/requests", authMiddleware, friendController.listRequests)
 
 router.post(
     "/request",
