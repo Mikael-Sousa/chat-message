@@ -7,6 +7,7 @@ const getMe = async (req: any, res: any) => {
         return res.status(result.status).json(result)
 
     } catch (err: any) {
+        console.error(err);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -19,6 +20,7 @@ const getUsers = async (req: any, res: any) => {
         return res.status(result.status).json(result);
 
     } catch (err: any) {
+        console.error(err);
         return res.status(500).json({ message: "Internal server error" });
     }
 };
